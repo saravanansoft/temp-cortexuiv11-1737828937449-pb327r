@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LinkedIn Callback</title>
+</head>
+<body>
+    <script>
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+
+            if (code && state) {
+                window.opener.postMessage({
+                    type: 'linkedin_auth_code',
+                    code,
+                    state
+                }, window.location.origin);
+            } else {
+                window.opener.postMessage({
+                    type: 'linkedin_auth_error',
+                    error: 'No authorization code received'
+                }, window.location.origin);
+            }
+        } catch (error) {
+            window.opener.postMessage({
+                type: 'linkedin_auth_error',
+                error: 'Authentication failed'
+            }, window.location.origin);
+        } finally {
+            window.close();
+        }
+    </script>
+</body>
+</html>
